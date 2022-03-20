@@ -1,0 +1,10 @@
+mixin record-type(param)
+    table.table.text-muted.border-none.mt-3
+        each field in param.type.fields
+            tr 
+                th=field.key
+                td
+                    if field.value.type == "NameExpression"
+                        =field.value.name
+                    if field.value.type == "RecordType"
+                        +record-type(field.value)

@@ -1,0 +1,78 @@
+mixin node-type(node)
+    case node.type
+        when "MixinNode"
+            ="Mixin"
+        when "BlockNode"
+            ="Block"
+        default
+            ="Unknown"
+
+
+doctype html
+html(lang=options.language)
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title=options.formatting.title
+
+        link(rel="stylesheet", type="text/css", href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/" + options.formatting.html.theme + "/bootstrap.min.css")
+    body
+        include ./parts/header
+
+        .container#main
+            .row
+                .col-lg-7#main-content 
+                    each node in ast.nodes
+                        - let nodeId = node.type + node.name;
+                        .node.mb-5(id=nodeId)
+                            code.d-none=JSON.stringify(node, null, "\t")
+
+                            br
+
+                            strong
+                                +node-type(node)                                    
+                            h3
+                                a(href="#" + nodeId)="#"
+                                =" " + node.name
+
+                            if node.description
+                                !=node.description
+
+                            hr
+
+                            case node.type
+                                when "MixinNode"
+                                    h5="Parameters"
+                                    .list-group
+                                        - let params = node.tags.filter((tag) => tag.title === "param")
+
+                                        each param in params
+                                            .list-group-item
+                                                .row.justify-content-around
+                                                    .col
+                                                        strong=param.name
+                                                        
+                                                        case param.type.type
+                                                            when "NameExpression"
+                                                                .small=param.type.name
+                                                            
+                                                            when "RecordType"
+                                                                .small="interface"
+                                                                include ./parts/fields/record-type
+                                                                +record-type(param)
+
+                                                    .col.text-lg-right
+                                                        !=param.description
+                            
+                .col-lg-5#navigation
+                    .list-group
+                        each node in ast.nodes
+                            - let nodeId = node.type + node.name;
+                            
+                            a(href="#" + nodeId).list-group-item.list-group-item-action
+                                .row
+                                    .col
+                                        strong=node.name
+                                    .col.text-lg-right
+                                        +node-type(node)

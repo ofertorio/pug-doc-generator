@@ -1,9 +1,11 @@
 import { writeFileSync } from "fs";
 import { PugDocAst } from "../core/DocParser";
+import { PugDocsOptions } from "../types/Configuration";
 
 export default abstract class DocWriter {
     constructor(
-        protected ast: PugDocAst
+        protected ast: PugDocAst,
+        protected options: PugDocsOptions
     ) {
 
     }

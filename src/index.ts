@@ -4,58 +4,8 @@ import path from "path";
 
 import DocParser, { PugDocAst } from "./core/DocParser";
 import MarkdownDocWriter from "./core/writers/MarkdownDocWriter";
-
-export type DocumentationTypes = "markdown" | "html" | "ast";
-export interface PugDocsOptions {
-    /**
-     * The pug source file list or / glob
-     */
-    input: string|string[],
-
-    /**
-     * The source directory relative to the input file list / glob.
-     * It will be used to generate the source locations.
-     * Defaults to the dirname of the input param.
-     */
-    sourceDir?: string,
-
-    /**
-     * The documentation output directory.
-     */
-    output: string,
-
-    /**
-     * If the output directory needs to be cleared before saving anything to it.
-     */
-    clearOutputDir?: boolean,
-
-    /**
-     * The documentation output filename without extension.
-     * Defaults to "index"
-     */
-    outputName?: string,
-
-    /**
-     * Formatting options.
-     */
-    formatting?: {
-        /**
-         * The header to be included in the documentation file.
-         */
-        header?: string,
-
-        /**
-         * The footer to be included in the documentation file.
-         */
-        footer?: string
-    },
-
-    /**
-     * The types of documentations to generate.
-     * Defaults to "all".
-     */
-    types: DocumentationTypes[] | DocumentationTypes | "all"
-}
+import HTMLDocWriter from "./core/writers/HTMLDocWriter";
+import { PugDocsOptions } from "./types/Configuration";
 
 /**
  * The default compiler options
@@ -64,10 +14,15 @@ const defaultOptions: PugDocsOptions = {
     input: null,
     output: null,
     outputName: "index",
-    types: "all"
+    types: "all",
+    formatting: {
+        html: {
+            theme: "cosmo"
+        }
+    }
 };
 
-export default (options: PugDocsOptions = defaultOptions) => {
+export = (options: PugDocsOptions = defaultOptions) => {
     // Merge with the default options
     options = { ...defaultOptions, ...options };
 
@@ -79,6 +34,12 @@ export default (options: PugDocsOptions = defaultOptions) => {
     if (!Array.isArray(options.types)) {
         // Convert it to a single item array
         options.types = [options.types];
+    }
+
+    // If no title has been set
+    if (!options?.formatting?.title) {
+        options.formatting = options.formatting || {};
+        options.formatting.title = "Documentation";
     }
 
     /**
@@ -125,13 +86,19 @@ export default (options: PugDocsOptions = defaultOptions) => {
 
     if (options.types.includes("markdown")) {
         // Write the mardown version to it
-        new MarkdownDocWriter(ast)
+        new MarkdownDocWriter(ast, options)
             .writeToFile(
                 path.resolve(options.output, options.outputName + ".md")
             );
     }
 
+    if (options.types.includes("html")) {
+        // Write the mardown version to it
+        new HTMLDocWriter(ast, options)
+            .writeToFile(
+                path.resolve(options.output, options.outputName + ".html")
+            );
+    }
+
     return true;
 }
-
-module.exports = exports.default;
