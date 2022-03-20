@@ -24,6 +24,7 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
+    "doc-tree": "^0.14.0",
     "glob": "^7.2.0",
     "jsdoc": "^3.6.10"
   }
