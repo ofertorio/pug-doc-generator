@@ -1,0 +1,17 @@
+//- @pugdoc
+    This mixin needs to be well documented
+
+    @param {string} param This parameter is a string
+mixin test-mixin(param)
+    block
+
+//- @pugdoc
+    This mixin also needs to be documented
+
+    @param {string} param This parameter is a string
+    @param {{
+        bool: boolean,
+        str: string
+    }} interfaceParam An interface parameter
+mixin second-mixin(param, interfaceParam)
+    block

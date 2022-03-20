@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "esModuleInterop": true,
+        "module": "commonjs",
+        "outDir": "./dest/",
+        "declaration": true,
+        "declarationDir": "./types/",
+        "declarationMap": true
+    },
+    "include": ["./src/**/*.ts"],
+    "watchOptions": {
+        "excludeDirectories": ["**/node_modules", "dest"]
+    }
+}
