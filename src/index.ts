@@ -1,8 +1,11 @@
 import glob from "glob";
-import { writeFileSync, mkdirSync } from "fs";
+import { writeFileSync, mkdirSync, existsSync, rmdirSync } from "fs";
+import path from "path";
 
 import DocParser, { PugDocAst } from "./core/DocParser";
 import MarkdownDocWriter from "./core/writers/MarkdownDocWriter";
+
+export type DocumentationTypes = "markdown" | "html" | "ast";
 export interface PugDocsOptions {
     /**
      * The pug source file list or / glob
@@ -10,12 +13,74 @@ export interface PugDocsOptions {
     input: string|string[],
 
     /**
-     * The documentation output directory
+     * The source directory relative to the input file list / glob.
+     * It will be used to generate the source locations.
+     * Defaults to the dirname of the input param.
      */
-    output: string
+    sourceDir?: string,
+
+    /**
+     * The documentation output directory.
+     */
+    output: string,
+
+    /**
+     * If the output directory needs to be cleared before saving anything to it.
+     */
+    clearOutputDir?: boolean,
+
+    /**
+     * The documentation output filename without extension.
+     * Defaults to "index"
+     */
+    outputName?: string,
+
+    /**
+     * Formatting options.
+     */
+    formatting?: {
+        /**
+         * The header to be included in the documentation file.
+         */
+        header?: string,
+
+        /**
+         * The footer to be included in the documentation file.
+         */
+        footer?: string
+    },
+
+    /**
+     * The types of documentations to generate.
+     * Defaults to "all".
+     */
+    types: DocumentationTypes[] | DocumentationTypes | "all"
 }
 
-export default (options: PugDocsOptions) => {
+/**
+ * The default compiler options
+ */
+const defaultOptions: PugDocsOptions = {
+    input: null,
+    output: null,
+    outputName: "index",
+    types: "all"
+};
+
+export default (options: PugDocsOptions = defaultOptions) => {
+    // Merge with the default options
+    options = { ...defaultOptions, ...options };
+
+    // If defaults to all
+    if (options.types === "all") {
+        options.types = ["ast", "html", "markdown"];
+    } else
+    // If it's not an array
+    if (!Array.isArray(options.types)) {
+        // Convert it to a single item array
+        options.types = [options.types];
+    }
+
     /**
      * Prepare the AST data
      */
@@ -23,11 +88,15 @@ export default (options: PugDocsOptions) => {
         nodes: []
     };
 
+    // The file list that will be parsed
     let files: string[];
 
+    // If it's an array
     if (Array.isArray(options.input)) {
+        // Defaults to it
         files = options.input;
     } else {
+        // Assume it's a glob
         files = glob.sync(options.input);
     }
 
@@ -37,14 +106,30 @@ export default (options: PugDocsOptions) => {
         ast.nodes.push(...parser.parse());
     }
 
-    // Create the output directory
-    mkdirSync(options.output, { recursive: true });
+    if (existsSync(options.output)) {
+        // If can clear the output directory
+        if (options.clearOutputDir) {
+            // Clear it and create again
+            rmdirSync(options.output, { recursive: true });
+            mkdirSync(options.output, { recursive: true });
+        }   
+    } else {
+        // Create the output directory
+        mkdirSync(options.output, { recursive: true });
+    }
 
-    // Write the AST to it
-    writeFileSync(options.output + "/ast.json", JSON.stringify(ast, null, "\t"));
+    if (options.types.includes("ast")) {
+        // Write the AST to it
+        writeFileSync(path.resolve(options.output, options.outputName + ".json"), JSON.stringify(ast, null, "\t"));
+    }
 
-    // Write the mardown version to it
-    new MarkdownDocWriter(ast).writeToFile(options.output + "/index.md");
+    if (options.types.includes("markdown")) {
+        // Write the mardown version to it
+        new MarkdownDocWriter(ast)
+            .writeToFile(
+                path.resolve(options.output, options.outputName + ".md")
+            );
+    }
 
     return true;
 }

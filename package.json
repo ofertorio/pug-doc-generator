@@ -1,9 +1,9 @@
 {
-  "name": "pug-jsdocs",
-  "description": "Generates documentations for mixins and blocks.",
+  "name": "pug-doc-generator",
+  "description": "Generates documentations for mixins, blocks and more.",
   "version": "1.0.0",
   "main": "dest/index.js",
-  "repository": "https://github.com/ofertorio/pug-jsdocs",
+  "repository": "https://github.com/ofertorio/pug-doc-generator",
   "author": "Matheus Giovani <matheus@ad3com.com.br>",
   "license": "MIT",
   "private": false,
@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "doc-tree": "^0.14.0",
-    "glob": "^7.2.0",
-    "jsdoc": "^3.6.10"
+    "glob": "^7.2.0"
   }
 }

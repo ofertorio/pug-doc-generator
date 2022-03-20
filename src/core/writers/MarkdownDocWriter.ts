@@ -64,13 +64,13 @@ export default class MarkdownDocWriter extends DocWriter {
 
                     if (param.type.type === "NameExpression") {
                         this.write("- `" + param.type.name + "`");
-                        this.writeLine("- " + param.description.replace(/^\s+|\s+$/g, ""));
+                        this.writeLine("- " + param.description);
                     } else
                     if (param.type.type === "RecordType") {
                         this.writeLine("```typescript");
                         this.writeRecord(param.type.fields);
                         this.writeLine("```");
-                        this.writeLine(param.description.replace(/^\s+|\s+$/g, ""));
+                        this.writeLine(param.description);
                     }
 
                     this.retreatIdentation();

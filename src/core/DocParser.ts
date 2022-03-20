@@ -128,6 +128,9 @@ export default class DocParser {
         // Retrieve only the first comment
         const parsedComment = docTree.parse(commentAsJsComment).output().shift().comment;
 
+        // Remove starting and trailing whitespaces
+        parsedComment.description = parsedComment.description.replace(/^\s+|\s+$/g, "");
+
         // Set the mixin data
         node = { ...node, ...parsedComment };
 
