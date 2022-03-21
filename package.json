@@ -1,7 +1,7 @@
 {
   "name": "pug-doc-generator",
   "description": "Generates documentations for mixins, blocks and more.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dest/index.js",
   "repository": "https://github.com/ofertorio/pug-doc-generator",
   "author": "Matheus Giovani <matheus@ad3com.com.br>",
