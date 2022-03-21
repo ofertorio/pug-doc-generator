@@ -1,8 +1,10 @@
 //- @pugdoc
-    This mixin needs to be well documented
+    This mixin is named text-mixin and contains two params:
+    one is a string and the second one is a boolean
 
     @param {string} param This parameter is a string
-mixin test-mixin(param)
+    @param {boolean} boolParam This parameter is a boolean
+mixin test-mixin(param, boolParam = false)
     block
 
 //- @pugdoc

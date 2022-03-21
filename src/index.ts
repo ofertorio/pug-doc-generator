@@ -1,6 +1,7 @@
 import glob from "glob";
 import { writeFileSync, mkdirSync, existsSync, rmdirSync } from "fs";
 import path from "path";
+import { deepmerge } from "deepmerge-ts";
 
 import DocParser, { PugDocAst } from "./core/DocParser";
 import MarkdownDocWriter from "./core/writers/MarkdownDocWriter";
@@ -16,7 +17,9 @@ const defaultOptions: PugDocsOptions = {
     outputName: "index",
     types: "all",
     formatting: {
+        title: "Documentation",
         html: {
+            lang: "en",
             theme: "cosmo"
         }
     }
@@ -24,7 +27,7 @@ const defaultOptions: PugDocsOptions = {
 
 export = (options: PugDocsOptions = defaultOptions) => {
     // Merge with the default options
-    options = { ...defaultOptions, ...options };
+    options = deepmerge(defaultOptions, options);
 
     // If defaults to all
     if (options.types === "all") {
@@ -33,13 +36,7 @@ export = (options: PugDocsOptions = defaultOptions) => {
     // If it's not an array
     if (!Array.isArray(options.types)) {
         // Convert it to a single item array
-        options.types = [options.types];
-    }
-
-    // If no title has been set
-    if (!options?.formatting?.title) {
-        options.formatting = options.formatting || {};
-        options.formatting.title = "Documentation";
+        options.types = options.types.split(",") as any;
     }
 
     /**
@@ -59,6 +56,11 @@ export = (options: PugDocsOptions = defaultOptions) => {
     } else {
         // Assume it's a glob
         files = glob.sync(options.input);
+    }
+
+    if (files.length === 0) {
+        console.info("Found 0 pug source files.");
+        return;
     }
 
     // Parse all files into the AST

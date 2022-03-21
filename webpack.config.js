@@ -7,7 +7,7 @@ module.exports = {
     mode: process.env.NODE_ENV !== "production" ? "development" : "production",
     entry: __dirname + "/src/index.ts",
     target: "node",
-    devtool: "inline-source-map",
+    devtool: "source-map",
     output: {
         filename: "index.js",
         path: __dirname + "/dest/",

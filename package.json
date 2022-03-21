@@ -1,16 +1,17 @@
 {
   "name": "pug-doc-generator",
   "description": "Generates documentations for mixins, blocks and more.",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "dest/index.js",
   "repository": "https://github.com/ofertorio/pug-doc-generator",
   "author": "Matheus Giovani <matheus@ad3com.com.br>",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "private": false,
   "types": "types/",
   "type": "commonjs",
+  "bin": "bin/pug-doc-generator.js",
   "scripts": {
-    "build": "webpack --production",
+    "build": "webpack --mode production",
     "watch": "npm-run-all -p -r watch-core watch-test",
     "watch-core": "webpack --watch",
     "watch-test": "nodemon --ignore test/out test/index"
@@ -19,11 +20,12 @@
     "@types/glob": "^7.2.0",
     "@types/node": "^17.0.21",
     "@types/pug": "^2.0.6",
+    "@types/yargs": "^17.0.10",
     "nodemon": "^2.0.15",
     "npm-run-all": "^4.1.5",
     "pug": "^3.0.2",
-    "pug-loader": "^2.4.0",
     "pug-code-block": "^3.6.1",
+    "pug-loader": "^2.4.0",
     "ts-loader": "^9.2.8",
     "typescript": "^4.6.2",
     "webpack": "^5.70.0",
@@ -31,7 +33,9 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "deepmerge-ts": "^4.0.1",
     "doc-tree": "^0.14.0",
-    "glob": "^7.2.0"
+    "glob": "^7.2.0",
+    "yargs": "^17.4.0"
   }
 }

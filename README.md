@@ -24,5 +24,5 @@ pugDocGen({
 You can also run it via command line:
 
 ```bash
-pug-doc-generator --input ./src/**/*.pug --output ./out
+pug-doc-generator --input="./src/**/*.pug" --output="./out" --types="html"
 ```
