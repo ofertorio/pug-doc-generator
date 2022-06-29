@@ -10,6 +10,7 @@
   "types": "types/",
   "type": "commonjs",
   "bin": "bin/pug-doc-generator.js",
+  "keywords": ["pug", "pugjs", "documentation", "docs", "jsdoc"],
   "scripts": {
     "build": "webpack --mode production",
     "watch": "npm-run-all -p -r watch-core watch-test",
